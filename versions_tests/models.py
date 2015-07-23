@@ -1,4 +1,4 @@
-from django.db.models import CharField, IntegerField, Model, ForeignKey, DateField, BooleanField
+from django.db.models import *
 from django.db.models.deletion import DO_NOTHING, PROTECT, SET, SET_NULL
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -283,15 +283,28 @@ class WineDrinkerHat(Model):
         return "<" + str(self.__class__.__name__) + " object: " + str(
             self.shape) + " (" + str(self.color) + ")>"
 
+class WineTastingPartyMgr(Manager):
+
+    @property
+    def current(self):
+        return self
+
 @python_2_unicode_compatible
 class WineTastingParty(Model):
     location = CharField(max_length=200)
     party_date = DateField()
-    host = VersionedForeignKey(WineDrinker)
+    # host = VersionedForeignKey(WineDrinker)
     drinker = VersionedManyToManyField(WineDrinker, related_name='tasters')
 
+    objects = WineTastingPartyMgr()
+
     def __str__(self):
-        return self.location + " tasters: " + str([d for d in self.tasters])
+        return self.location
+
+    @property
+    def is_current(self):
+        return True
+
 
 ############################################
 # SelfReferencingManyToManyTest models

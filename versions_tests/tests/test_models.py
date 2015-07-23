@@ -2171,7 +2171,7 @@ class IntegrationNonVersionableModelsTests(TestCase):
 
         # Add a Tasting Party
         party = WineTastingParty.objects.create(location='home', party_date=self.t1, host=self.gigi)
-        party.tasters.add(self.jacques, self.alfonso, self.jackie, self.gigi)
+        party.drinker =[self.jacques, self.alfonso, self.jackie, self.gigi]
 
         self.jacques = self.jacques.clone()
         # Jacques wants to try the italian stuff...
