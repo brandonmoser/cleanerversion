@@ -33,7 +33,7 @@ from versions.exceptions import DeletionOfNonCurrentVersionError
 from versions.models import get_utc_now, ForeignKeyRequiresValueError, Versionable
 from versions_tests.models import (
     Award, B, C1, C2, C3, City, Classroom, Directory, Fan, Mascot, NonFan, Observer, Person, Player, Professor, Pupil,
-    RabidFan, Student, Subject, Teacher, Team, Wine, WineDrinker, WineDrinkerHat, WizardFan,
+    RabidFan, Student, Subject, Teacher, Team, Wine, WineDrinker, WineDrinkerHat, WineTastingParty, WizardFan,
     PizzaTopping, Pizza, PizzaOrder
 )
 
@@ -2151,6 +2151,7 @@ class IntegrationNonVersionableModelsTests(TestCase):
         self.jacques = WineDrinker.objects.create(name='Jacques', glass_content=self.bordeaux)
         self.alfonso = WineDrinker.objects.create(name='Alfonso', glass_content=self.barolo)
         self.jackie = WineDrinker.objects.create(name='Jackie', glass_content=self.port)
+        self.gigi = WineDrinker.objects.create(name='Gigi', glass_content=None)
 
         self.red_sailor_hat = WineDrinkerHat.objects.create(shape='Sailor', color='red', wearer=self.jackie)
         self.blue_turban_hat = WineDrinkerHat.objects.create(shape='Turban', color='blue', wearer=self.alfonso)
@@ -2159,6 +2160,18 @@ class IntegrationNonVersionableModelsTests(TestCase):
 
         self.t1 = get_utc_now()
         sleep(0.1)
+
+        # Add the host for this party
+        self.gigi.host = True
+        self.gigi.save()
+
+        # Add wines to the host's cellar
+        self.gigi.cellar.add(self.bordeaux, self.barolo, self.port)
+        self.gigi.save()
+
+        # Add a Tasting Party
+        party = WineTastingParty.objects.create(location='home', party_date=self.t1, host=self.gigi)
+        party.tasters.add(self.jacques, self.alfonso, self.jackie, self.gigi)
 
         self.jacques = self.jacques.clone()
         # Jacques wants to try the italian stuff...

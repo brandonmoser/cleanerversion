@@ -1,4 +1,4 @@
-from django.db.models import CharField, IntegerField, Model, ForeignKey, DateField
+from django.db.models import CharField, IntegerField, Model, ForeignKey, DateField, BooleanField
 from django.db.models.deletion import DO_NOTHING, PROTECT, SET, SET_NULL
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -261,6 +261,8 @@ class Wine(Model):
 class WineDrinker(Versionable):
     name = CharField(max_length=200)
     glass_content = ForeignKey(Wine, related_name='drinkers', null=True)
+    host = BooleanField(default=False)
+    cellar = VersionedManyToManyField(Wine, related_name='wines')
 
     __str__ = versionable_description
 
@@ -281,6 +283,15 @@ class WineDrinkerHat(Model):
         return "<" + str(self.__class__.__name__) + " object: " + str(
             self.shape) + " (" + str(self.color) + ")>"
 
+@python_2_unicode_compatible
+class WineTastingParty(Model):
+    location = CharField(max_length=200)
+    party_date = DateField()
+    host = VersionedForeignKey(WineDrinker)
+    drinker = VersionedManyToManyField(WineDrinker, related_name='tasters')
+
+    def __str__(self):
+        return self.location + " tasters: " + str([d for d in self.tasters])
 
 ############################################
 # SelfReferencingManyToManyTest models
