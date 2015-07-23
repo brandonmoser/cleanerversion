@@ -293,7 +293,7 @@ class WineTastingPartyMgr(Manager):
 class WineTastingParty(Model):
     location = CharField(max_length=200)
     party_date = DateField()
-    # host = VersionedForeignKey(WineDrinker)
+    host = VersionedForeignKey(WineDrinker)
     drinker = VersionedManyToManyField(WineDrinker, related_name='tasters')
 
     objects = WineTastingPartyMgr()
