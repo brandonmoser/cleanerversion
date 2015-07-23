@@ -176,8 +176,8 @@ class Pizza(Versionable):
     __str__ = versionable_description
 
 class PizzaOrder(Versionable):
-    person = VersionedForeignKey(PizzaTopping)
-    group = VersionedForeignKey(Pizza)
+    topping = VersionedForeignKey(PizzaTopping)
+    pizza = VersionedForeignKey(Pizza)
     date_ordered = DateField()
     delivery_address = CharField(max_length=255)
 
