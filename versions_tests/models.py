@@ -1,4 +1,4 @@
-from django.db.models import CharField, IntegerField, Model, ForeignKey
+from django.db.models import CharField, IntegerField, Model, ForeignKey, DateField
 from django.db.models.deletion import DO_NOTHING, PROTECT, SET, SET_NULL
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -158,6 +158,28 @@ class Teacher(Versionable):
     domain = CharField(max_length=200)
 
     __str__ = versionable_description
+
+
+############################################
+# ManyToManyThroughTableTest models
+@python_2_unicode_compatible
+class PizzaTopping(Versionable):
+    name = CharField(max_length=128)
+
+    __str__ = versionable_description
+
+@python_2_unicode_compatible
+class Pizza(Versionable):
+    name = CharField(max_length=128)
+    members = VersionedManyToManyField(PizzaTopping, through='PizzaOrder')
+
+    __str__ = versionable_description
+
+class PizzaOrder(Versionable):
+    person = VersionedForeignKey(PizzaTopping)
+    group = VersionedForeignKey(Pizza)
+    date_ordered = DateField()
+    delivery_address = CharField(max_length=255)
 
 
 ############################################

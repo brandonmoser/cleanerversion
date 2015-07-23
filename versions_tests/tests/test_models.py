@@ -33,7 +33,8 @@ from versions.exceptions import DeletionOfNonCurrentVersionError
 from versions.models import get_utc_now, ForeignKeyRequiresValueError, Versionable
 from versions_tests.models import (
     Award, B, C1, C2, C3, City, Classroom, Directory, Fan, Mascot, NonFan, Observer, Person, Player, Professor, Pupil,
-    RabidFan, Student, Subject, Teacher, Team, Wine, WineDrinker, WineDrinkerHat, WizardFan
+    RabidFan, Student, Subject, Teacher, Team, Wine, WineDrinker, WineDrinkerHat, WizardFan,
+    PizzaTopping, Pizza, PizzaOrder
 )
 
 
@@ -282,6 +283,7 @@ class DeletionHandlerTest(TestCase):
         p1.delete()
         self.assertEqual(1, through.objects.filter(player_id=p1.pk).count())
         self.assertEqual(0, through.objects.current.filter(player_id=p1.pk).count())
+
 
 class CurrentVersionTest(TestCase):
     def setUp(self):
@@ -1935,6 +1937,7 @@ class ReverseForeignKeyDirectAssignmentTests(TestCase):
     def test_t3_relations_for_cloned_referring_object(self):
         city = City.objects.as_of(self.t3).filter(identity=self.c10.identity).first()
         self.assertEqual(0, city.team_set.all().count())
+
 
 class PrefetchingTests(TestCase):
     def setUp(self):
